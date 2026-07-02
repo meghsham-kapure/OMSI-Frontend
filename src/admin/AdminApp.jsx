@@ -13,6 +13,7 @@ import { CreateProjectPage } from './pages/projects/CreateProjectPage';
 import { EditProjectPage } from './pages/projects/EditProjectPage';
 import { EmployeesPage } from './pages/employees/EmployeesPage';
 import { CreateEmployeePage } from './pages/employees/CreateEmployeePage';
+import { FeedbackPage } from './pages/feedback/FeedbackPage';
 
 /**
  * Page title map — keyed by route pattern
@@ -112,6 +113,18 @@ export function AdminApp() {
                 </ProtectedRoute>
               }
             />
+          </Route>
+
+          {/* Feedback / Enquiries */}
+          <Route
+            path="feedback"
+            element={
+              <ProtectedRoute allowedRoles={['SUPERADMIN', 'ADMIN', 'ENGINEER']}>
+                <ShellWithTitle title="Feedback & Enquiries" />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<FeedbackPage />} />
           </Route>
 
           {/* Default: redirect /admin → /osi-console/dashboard */}

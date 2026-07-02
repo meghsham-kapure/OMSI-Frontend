@@ -28,6 +28,12 @@ const NAV_ITEMS = [
     roles: ['SUPERADMIN', 'ADMIN', 'ENGINEER', 'RECRUITER'],
   },
   {
+    path: '/osi-console/feedback',
+    label: 'Feedback',
+    icon: '📬',
+    roles: ['SUPERADMIN', 'ADMIN', 'ENGINEER'],
+  },
+  {
     path: '/osi-console/account',
     label: 'My Account',
     icon: '⚙',

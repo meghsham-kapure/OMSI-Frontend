@@ -3,6 +3,90 @@ import { useParams, Link } from 'react-router-dom';
 import { ArrowLeft, Mail, Phone, MapPin, Award, BookOpen, FileDown, Shield, Briefcase } from 'lucide-react';
 import { publicApi } from '../lib/publicApi';
 
+// Inline dummy data mirror (must stay in sync with TeamGrid's DUMMY_TEAM)
+const DUMMY_TEAM = [
+  {
+    _id: 'leader-1',
+    name: 'Er. Ramesh Vaidya',
+    designation: 'Chairman & Managing Director',
+    qualification: 'B.E. (Civil), M.Tech (Structural), FIE, PMP Certified',
+    experience: '38+ years in infrastructure planning, highway engineering, and project execution across Maharashtra, Goa & Karnataka.',
+    email: 'r.vaidya@omseva.in',
+    phone: '9820011230',
+    location: 'Mumbai, Maharashtra',
+    isLeader: true,
+    isLive: true,
+    specializations: ['Highway Engineering', 'Project Finance & DPR', 'Structural Design', 'Contract Management'],
+    keyProjects: [
+      'NH-66 Coastal Expressway Widening – 42 km (NHAI)',
+      'Mumbai-Pune Expressway Maintenance Package – 12 km',
+      'Versova-Bandra Sea Link Approach Roads',
+    ],
+    image: { url: 'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&w=600&q=80' },
+    resume: null,
+  },
+  {
+    _id: 'leader-2',
+    name: 'Er. Sujata Kulkarni',
+    designation: 'Director – Water Resources',
+    qualification: 'B.E. (Civil), M.E. (Hydraulics), MIE',
+    experience: '31 years specialising in irrigation infrastructure, dam safety, and rural water supply schemes under Jal Jeevan Mission.',
+    email: 's.kulkarni@omseva.in',
+    phone: '9870045678',
+    location: 'Pune, Maharashtra',
+    isLeader: true,
+    isLive: true,
+    specializations: ['Hydraulic Engineering', 'Dam Safety Review', 'Rural Water Supply', 'GIS Mapping'],
+    keyProjects: [
+      'Jalgaon Rural Water Supply – 180 km pipeline (JJM)',
+      'Godavari Canal Rehabilitation – Reach 3',
+      'Koyna Dam Safety Instrumentation Programme',
+    ],
+    image: { url: 'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&w=600&q=80' },
+    resume: null,
+  },
+  {
+    _id: 'leader-3',
+    name: 'Er. Anil Deshmukh',
+    designation: 'Director – Structural & Metro Projects',
+    qualification: 'B.E. (Civil), M.Tech (Structures), Ph.D. (IIT Bombay)',
+    experience: '27 years in bridge engineering, metro viaducts, and structural rehabilitation with projects across 6 Indian states.',
+    email: 'a.deshmukh@omseva.in',
+    phone: '9823398765',
+    location: 'Mumbai, Maharashtra',
+    isLeader: true,
+    isLive: true,
+    specializations: ['Bridge Design', 'Metro Viaducts', 'Box-Girder Technology', 'Seismic Assessment'],
+    keyProjects: [
+      'Pune Metro Rail Viaduct – Package C4 (PMRDA)',
+      'Thane Creek Bridge Rehabilitation',
+      'Bandra-Worli Sea Link Approach Viaduct',
+    ],
+    image: { url: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=600&q=80' },
+    resume: null,
+  },
+  {
+    _id: 'leader-4',
+    name: 'Er. Priya Sawant',
+    designation: 'Director – Construction Management',
+    qualification: 'B.E. (Civil), M.B.A. (Project Management), PMP, RICS Certified',
+    experience: '22 years managing large-scale construction projects, EPC contracts, and quality assurance across urban and semi-urban corridors.',
+    email: 'p.sawant@omseva.in',
+    phone: '9892267890',
+    location: 'Kolhapur, Maharashtra',
+    isLeader: true,
+    isLive: true,
+    specializations: ['EPC Contract Management', 'QA / QC Systems', 'Urban Infrastructure', 'Cost Engineering'],
+    keyProjects: [
+      'Kolhapur Flyover & Grade Separator (KMC)',
+      'Nashik Smart City Road Package – 18 km',
+      'Solapur Bypass Widening – Phase II',
+    ],
+    image: { url: 'https://images.unsplash.com/photo-1580489944761-15a19d654956?auto=format&fit=crop&w=600&q=80' },
+    resume: null,
+  },
+];
+
 export function TeamDetail() {
   const { id } = useParams();
   const [member, setMember] = useState(null);
@@ -15,15 +99,31 @@ export function TeamDetail() {
       try {
         const res = await publicApi.get('/employee/getAllTeamMembers');
         const teamData = res.data?.data?.teamMembers || [];
-        const found = teamData.find((m) => m._id === id);
-        if (found) {
-          setMember(found);
+        if (teamData.length > 0) {
+          const found = teamData.find((m) => m._id === id);
+          if (found) {
+            setMember(found);
+          } else {
+            setError('Team member not found.');
+          }
         } else {
-          setError('Team member not found.');
+          // API returned empty — check dummy data
+          const dummy = DUMMY_TEAM.find((m) => m._id === id);
+          if (dummy) {
+            setMember(dummy);
+          } else {
+            setError('Team member not found.');
+          }
         }
       } catch (err) {
         console.error(err);
-        setError('Failed to fetch team member information.');
+        // On network error also try dummy data
+        const dummy = DUMMY_TEAM.find((m) => m._id === id);
+        if (dummy) {
+          setMember(dummy);
+        } else {
+          setError('Failed to fetch team member information.');
+        }
       } finally {
         setLoading(false);
       }

@@ -9,11 +9,13 @@ const ROLE_PERMISSIONS = {
     { label: 'Users', path: '/osi-console/users', icon: '👤', color: 'var(--admin-purple)' },
   ],
   ADMIN: [
-    { label: 'Projects', path: '/osi-console/projects', icon: '🏗', color: 'var(--admin-blue)' },
+    { label: 'Projects',  path: '/osi-console/projects',  icon: '🏗', color: 'var(--admin-blue)' },
     { label: 'Employees', path: '/osi-console/employees', icon: '👥', color: 'var(--admin-teal)' },
+    { label: 'Feedback',  path: '/osi-console/feedback',  icon: '📬', color: 'var(--admin-green)' },
   ],
   ENGINEER: [
     { label: 'Projects', path: '/osi-console/projects', icon: '🏗', color: 'var(--admin-blue)' },
+    { label: 'Feedback', path: '/osi-console/feedback', icon: '📬', color: 'var(--admin-green)' },
   ],
   RECRUITER: [
     { label: 'Employees', path: '/osi-console/employees', icon: '👥', color: 'var(--admin-teal)' },

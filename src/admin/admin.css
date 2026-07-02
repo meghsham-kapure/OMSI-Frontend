@@ -4,6 +4,7 @@
   --admin-green-hover: #2E7D4F;
   --admin-black: #0F172A;
   --admin-text: #334155;
+  --admin-gray: #64748B;
   --admin-bg: #F1F5F9;
   --admin-border: #E2E8F0;
   --admin-danger: #EF4444;
@@ -1141,4 +1142,87 @@
   object-fit: cover;
   border-radius: 8px;
   border: 1px solid var(--admin-border);
+}
+
+/* =========================================
+   FEEDBACK MODAL
+   ========================================= */
+.admin-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(15, 23, 42, 0.55);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 1rem;
+  backdrop-filter: blur(2px);
+  animation: admin-fade-in 0.15s ease;
+}
+
+@keyframes admin-fade-in {
+  from { opacity: 0; }
+  to   { opacity: 1; }
+}
+
+.admin-modal {
+  background: white;
+  border-radius: 14px;
+  width: 100%;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
+  animation: admin-modal-in 0.2s cubic-bezier(0.16, 1, 0.3, 1);
+  overflow: hidden;
+}
+
+@keyframes admin-modal-in {
+  from { transform: translateY(16px) scale(0.97); opacity: 0; }
+  to   { transform: translateY(0) scale(1);        opacity: 1; }
+}
+
+.admin-modal__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--admin-border);
+  background: var(--admin-bg);
+}
+
+.admin-modal__title {
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: var(--admin-black);
+  margin: 0;
+}
+
+.admin-modal__sub {
+  font-size: 0.75rem;
+  color: var(--admin-gray);
+  margin: 0.2rem 0 0 0;
+}
+
+.admin-modal__close {
+  background: none;
+  border: 1px solid var(--admin-border);
+  border-radius: 6px;
+  color: var(--admin-gray);
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.875rem;
+  line-height: 1;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+
+.admin-modal__close:hover {
+  background: #F1F5F9;
+  color: var(--admin-black);
+  border-color: #94A3B8;
+}
+
+.admin-modal__body {
+  padding: 1.5rem;
+  overflow-y: auto;
+  max-height: calc(100vh - 220px);
 }

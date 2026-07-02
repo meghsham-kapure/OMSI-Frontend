@@ -18,6 +18,7 @@ import { Careers } from './pages/Careers';
 import { Blog } from './pages/Blog';
 import { BlogDetail } from './pages/BlogDetail';
 import { Contact } from './pages/Contact';
+import { Consultation } from './pages/Consultation';
 
 // Scroll to top helper on page transitions
 function ScrollToTop() {
@@ -62,6 +63,7 @@ function App() {
                     <Route path="/blog" element={<Blog />} />
                     <Route path="/blog/:slug" element={<BlogDetail />} />
                     <Route path="/contact" element={<Contact />} />
+                    <Route path="/consultation" element={<Consultation />} />
                   </Routes>
                 </main>
                 <WhatsAppButton />
