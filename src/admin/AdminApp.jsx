@@ -13,6 +13,7 @@ import { CreateProjectPage } from './pages/projects/CreateProjectPage';
 import { EditProjectPage } from './pages/projects/EditProjectPage';
 import { EmployeesPage } from './pages/employees/EmployeesPage';
 import { CreateEmployeePage } from './pages/employees/CreateEmployeePage';
+import { EditEmployeePage } from './pages/employees/EditEmployeePage';
 import { FeedbackPage } from './pages/feedback/FeedbackPage';
 import { JobsPage } from './pages/jobs/JobsPage';
 import { CreateJobPage } from './pages/jobs/CreateJobPage';
@@ -114,6 +115,14 @@ export function AdminApp() {
               element={
                 <ProtectedRoute allowedRoles={['ADMIN', 'RECRUITER']}>
                   <CreateEmployeePage />
+                </ProtectedRoute>
+              }
+            />
+            <Route
+              path=":employeeId/edit"
+              element={
+                <ProtectedRoute allowedRoles={['ADMIN', 'RECRUITER']}>
+                  <EditEmployeePage />
                 </ProtectedRoute>
               }
             />

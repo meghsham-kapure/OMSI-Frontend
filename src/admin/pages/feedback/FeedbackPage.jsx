@@ -3,6 +3,7 @@ import { api } from '../../lib/api';
 import { useToast } from '../../context/ToastContext';
 import { AdminTable } from '../../components/ui/AdminTable';
 import { Spinner } from '../../components/ui/Spinner';
+import { X, Check, Mail, Phone } from 'lucide-react';
 
 const PAGE_SIZE = 10;
 
@@ -201,7 +202,7 @@ export function FeedbackPage() {
                     {markingRead ? 'Marking…' : 'Mark as Read'}
                   </button>
                 )}
-                <button className="admin-modal__close" onClick={() => setSelected(null)}>✕</button>
+                <button className="admin-modal__close" onClick={() => setSelected(null)}><X size={18} /></button>
               </div>
             </div>
 
@@ -215,7 +216,7 @@ export function FeedbackPage() {
                   { label: 'Organisation',      value: selected.organisationName || '—' },
                   { label: 'Enquiry Type',      value: selected.enquiryType || 'Project Consultancy' },
                   { label: 'Preferred Contact', value: selected.preferredContactTime || '—' },
-                  { label: 'Read Status',       value: selected.isRead ? 'Read ✓' : 'Unread' },
+                  { label: 'Read Status',       value: selected.isRead ? 'Read' : 'Unread' },
                 ].map(({ label, value }) => (
                   <div key={label}>
                     <p style={{ fontSize: 10, fontWeight: 700, color: 'var(--admin-gray)', textTransform: 'uppercase', letterSpacing: '0.06em', marginBottom: 2 }}>
@@ -251,13 +252,13 @@ export function FeedbackPage() {
                   href={`mailto:${selected.emailAddress}?subject=Re: ${encodeURIComponent(selected.enquiryType || 'Your Enquiry')}`}
                   className="admin-btn admin-btn--sm admin-btn--primary"
                 >
-                  📧 Reply via Email
+                  <Mail size={14} /> Reply via Email
                 </a>
                 <a
                   href={`tel:${selected.phoneNumber}`}
                   className="admin-btn admin-btn--sm admin-btn--ghost"
                 >
-                  📞 Call
+                  <Phone size={14} /> Call
                 </a>
               </div>
             </div>

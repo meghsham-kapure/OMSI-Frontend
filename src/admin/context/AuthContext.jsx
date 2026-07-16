@@ -1,11 +1,13 @@
 import { createContext, useContext, useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { api } from '../lib/api';
+import { useToast } from './ToastContext';
 
 const AuthContext = createContext(null);
 
 export function AuthProvider({ children }) {
   const navigate = useNavigate();
+  const toast = useToast();
 
   // user: { userId, sessionId, role } | null
   const [user, setUser] = useState(() => {
@@ -19,12 +21,11 @@ export function AuthProvider({ children }) {
 
   const [isLoading, setIsLoading] = useState(false);
 
-  // Listen for 401 events from api.js
+  // Listen for 401 events from api.js — show error popup instead of logging out
   const handleUnauthorized = useCallback(() => {
-    sessionStorage.removeItem('omseva_admin_user');
-    setUser(null);
-    navigate('/osi-console/login', { replace: true });
-  }, [navigate]);
+    toast.error('Access denied — you are not authorized to perform this action.');
+    navigate('/osi-console/dashboard', { replace: true });
+  }, [navigate, toast]);
 
   useEffect(() => {
     window.addEventListener('auth:unauthorized', handleUnauthorized);

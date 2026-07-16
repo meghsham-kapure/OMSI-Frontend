@@ -74,10 +74,15 @@ export function EmployeesPage() {
         </a>
       )}
       {canWrite && (
-        <button className="admin-btn admin-btn--xs admin-btn--danger"
-          onClick={() => setDeleteTarget(m)}>
-          Delete
-        </button>
+        <>
+          <Link to={`/osi-console/employees/${m._id}/edit`} className="admin-btn admin-btn--xs admin-btn--ghost">
+            Edit
+          </Link>
+          <button className="admin-btn admin-btn--xs admin-btn--danger"
+            onClick={() => setDeleteTarget(m)}>
+            Delete
+          </button>
+        </>
       )}
       {!canWrite && <span className="admin-table__readonly">View only</span>}
     </div>,

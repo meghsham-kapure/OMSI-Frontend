@@ -1,4 +1,5 @@
 import { useRef, useState } from 'react';
+import { FolderOpen, FileText, X } from 'lucide-react';
 
 /**
  * Drag-and-drop + click file upload.
@@ -55,7 +56,7 @@ export function FileUpload({ id, accept, multiple, files, onChange, error, label
           onChange={(e) => handleFiles(e.target.files)}
         />
         <div className="admin-file-drop__inner">
-          <span className="admin-file-drop__icon">📁</span>
+          <span className="admin-file-drop__icon"><FolderOpen size={28} /></span>
           <p className="admin-file-drop__text">
             {isDragging ? 'Drop files here' : 'Click or drag & drop files here'}
           </p>
@@ -75,7 +76,7 @@ export function FileUpload({ id, accept, multiple, files, onChange, error, label
                 {preview ? (
                   <img src={preview} alt={file.name} className="admin-file-item__preview" />
                 ) : (
-                  <span className="admin-file-item__icon">📄</span>
+                  <span className="admin-file-item__icon"><FileText size={20} /></span>
                 )}
                 <span className="admin-file-item__name">{file.name}</span>
                 <button
@@ -84,7 +85,7 @@ export function FileUpload({ id, accept, multiple, files, onChange, error, label
                   onClick={(e) => { e.stopPropagation(); removeFile(i); }}
                   aria-label={`Remove ${file.name}`}
                 >
-                  ✕
+                  <X size={14} />
                 </button>
               </li>
             );

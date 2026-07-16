@@ -1,54 +1,67 @@
 import { NavLink } from 'react-router-dom';
+
 import { useAuth } from '../context/AuthContext';
 import logo from '../../assets/logo.png';
+import {
+  LayoutDashboard,
+  Users,
+  HardHat,
+  UsersRound,
+  MessageSquareText,
+  Briefcase,
+  ClipboardList,
+  Settings,
+  ChevronLeft,
+  ChevronRight,
+} from 'lucide-react';
 
 const NAV_ITEMS = [
   {
     path: '/osi-console/dashboard',
     label: 'Dashboard',
-    icon: '◈',
+    icon: LayoutDashboard,
     roles: ['SUPERADMIN', 'ADMIN', 'ENGINEER', 'RECRUITER', 'USER'],
   },
   {
     path: '/osi-console/users',
     label: 'Users',
-    icon: '👤',
+    icon: Users,
     roles: ['SUPERADMIN'],
   },
   {
     path: '/osi-console/projects',
     label: 'Projects',
-    icon: '🏗',
+    icon: HardHat,
     roles: ['SUPERADMIN', 'ADMIN', 'ENGINEER', 'RECRUITER'],
   },
   {
     path: '/osi-console/employees',
     label: 'Employees',
-    icon: '👥',
+    icon: UsersRound,
     roles: ['SUPERADMIN', 'ADMIN', 'ENGINEER', 'RECRUITER'],
   },
   {
     path: '/osi-console/feedback',
     label: 'Feedback',
-    icon: '📬',
+    icon: MessageSquareText,
     roles: ['SUPERADMIN', 'ADMIN', 'ENGINEER'],
   },
   {
     path: '/osi-console/jobs',
     label: 'Jobs',
-    icon: '💼',
+    icon: Briefcase,
     roles: ['SUPERADMIN', 'ADMIN', 'RECRUITER'],
   },
   {
     path: '/osi-console/applications',
     label: 'Applications',
-    icon: '📋',
+    icon: ClipboardList,
     roles: ['SUPERADMIN', 'ADMIN', 'RECRUITER'],
   },
   {
     path: '/osi-console/account',
     label: 'My Account',
-    icon: '⚙',
+    icon: Settings,
     roles: ['SUPERADMIN', 'ADMIN', 'ENGINEER', 'RECRUITER', 'USER'],
   },
 ];
@@ -78,19 +91,24 @@ export function AdminSidebar({ collapsed, onToggle }) {
 
       {/* Nav */}
       <nav className="admin-sidebar__nav">
-        {visibleItems.map((item) => (
-          <NavLink
-            key={item.path}
-            to={item.path}
-            className={({ isActive }) =>
-              `admin-sidebar__link ${isActive ? 'admin-sidebar__link--active' : ''}`
-            }
-            title={collapsed ? item.label : undefined}
-          >
-            <span className="admin-sidebar__link-icon">{item.icon}</span>
-            {!collapsed && <span className="admin-sidebar__link-label">{item.label}</span>}
-          </NavLink>
-        ))}
+        {visibleItems.map((item) => {
+          const IconComponent = item.icon;
+          return (
+            <NavLink
+              key={item.path}
+              to={item.path}
+              className={({ isActive }) =>
+                `admin-sidebar__link ${isActive ? 'admin-sidebar__link--active' : ''}`
+              }
+              title={collapsed ? item.label : undefined}
+            >
+              <span className="admin-sidebar__link-icon">
+                <IconComponent size={20} />
+              </span>
+              {!collapsed && <span className="admin-sidebar__link-label">{item.label}</span>}
+            </NavLink>
+          );
+        })}
       </nav>
 
       {/* Toggle */}
@@ -100,7 +118,7 @@ export function AdminSidebar({ collapsed, onToggle }) {
         aria-label={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
         title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
       >
-        {collapsed ? '›' : '‹'}
+        {collapsed ? <ChevronRight size={20} /> : <ChevronLeft size={20} />}
       </button>
     </aside>
   );

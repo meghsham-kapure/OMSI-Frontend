@@ -1,8 +1,15 @@
 import { createContext, useContext, useState, useCallback, useRef } from 'react';
+import { CircleCheck, CircleX, Info } from 'lucide-react';
 
 const ToastContext = createContext(null);
 
 let toastIdCounter = 0;
+
+const TOAST_ICONS = {
+  success: <CircleCheck size={18} />,
+  error: <CircleX size={18} />,
+  info: <Info size={18} />,
+};
 
 export function ToastProvider({ children }) {
   const [toasts, setToasts] = useState([]);
@@ -51,7 +58,7 @@ function ToastContainer({ toasts, onDismiss }) {
       {toasts.map((t) => (
         <div key={t.id} className={`admin-toast admin-toast--${t.type}`} onClick={() => onDismiss(t.id)}>
           <span className="admin-toast__icon">
-            {t.type === 'success' ? '✓' : t.type === 'error' ? '✕' : 'ℹ'}
+            {TOAST_ICONS[t.type]}
           </span>
           <span className="admin-toast__msg">{t.message}</span>
         </div>

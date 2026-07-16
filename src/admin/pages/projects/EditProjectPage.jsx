@@ -4,6 +4,8 @@ import { api } from '../../lib/api';
 import { useToast } from '../../context/ToastContext';
 import { FormField } from '../../components/ui/FormField';
 import { FileUpload } from '../../components/ui/FileUpload';
+import { FormErrorBanner } from '../../components/ui/FormErrorBanner';
+import { LoadingOverlay } from '../../components/ui/LoadingOverlay';
 import { Spinner } from '../../components/ui/Spinner';
 
 const CATEGORIES = ['Construction', 'Transportation', 'Structural', 'Water', 'Surveying'];
@@ -64,8 +66,26 @@ export function EditProjectPage() {
 
   function validate() {
     const errs = {};
-    if (form.title !== undefined && !form.title.trim()) errs.title = 'Title cannot be empty.';
-    if (newImages.length > 3) errs.images = 'Maximum 3 images allowed.';
+    const t = form.title?.trim();
+    if (t !== undefined && t.length > 0 && t.length < 5) errs.title = `Title is too short — minimum 5 characters (currently ${t.length}).`;
+    if (t !== undefined && !t) errs.title = 'Title cannot be empty.';
+
+    const desc = form.description?.trim();
+    if (desc !== undefined && desc.length > 0 && desc.length < 50) errs.description = `Description is too short — minimum 50 characters (currently ${desc.length}).`;
+
+    const loc = form.location?.trim();
+    if (loc !== undefined && loc.length > 0 && loc.length < 5) errs.location = `Location is too short — minimum 5 characters (currently ${loc.length}).`;
+
+    const cl = form.client?.trim();
+    if (cl !== undefined && cl.length > 0 && cl.length < 5) errs.client = `Client name is too short — minimum 5 characters (currently ${cl.length}).`;
+
+    const bud = form.budget?.trim();
+    if (bud !== undefined && bud.length > 0 && bud.length < 5) errs.budget = `Budget is too short — minimum 5 characters (currently ${bud.length}).`;
+
+    const tl = form.teamLeader?.trim();
+    if (tl !== undefined && tl.length > 0 && tl.length < 2) errs.teamLeader = `Team leader name is too short — minimum 2 characters.`;
+
+    if ((existingImages.length + newImages.length) > 3) errs.images = `Too many images — maximum 3 allowed (${existingImages.length} existing + ${newImages.length} new).`;
     if (form.isFeatured && existingImages.length === 0 && newImages.length === 0)
       errs.images = 'Featured projects require at least 1 image.';
     return errs;
@@ -109,6 +129,8 @@ export function EditProjectPage() {
       </div>
 
       <form id="edit-project-form" className="admin-card admin-form-wide" onSubmit={handleSubmit} noValidate>
+        <LoadingOverlay visible={loading} message="Saving changes…" />
+        <FormErrorBanner errors={errors} />
         <div className="admin-form-grid">
           <FormField id="ep-title" label="Title" value={form.title}
             onChange={(e) => set('title', e.target.value)} error={errors.title} />
@@ -170,7 +192,7 @@ export function EditProjectPage() {
           <div className="admin-form-field">
             <label className="admin-form-field__label">Current Images</label>
             <p className="admin-form-field__hint">
-              Uploading new images below will replace all {existingImages.length} existing image{existingImages.length !== 1 ? 's' : ''}.
+              {existingImages.length} existing image{existingImages.length !== 1 ? 's' : ''} will be kept. New uploads below will be added alongside them.
             </p>
             <div className="admin-existing-images">
               {existingImages.map((img, i) => (
@@ -184,13 +206,13 @@ export function EditProjectPage() {
         {/* New images */}
         <FileUpload
           id="ep-images"
-          label="Replace Images (optional — leave empty to keep current images)"
+          label="Add More Images (optional)"
           accept="image/png,image/jpeg"
           multiple
           files={newImages}
           onChange={setNewImages}
           error={errors.images}
-          hint="PNG, JPG, JPEG · max 3 files · max 5 MB each"
+          hint={`PNG, JPG, JPEG · max ${3 - existingImages.length} more · max 5 MB each`}
         />
 
         <div className="admin-form-actions">

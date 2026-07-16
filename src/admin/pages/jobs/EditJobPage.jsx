@@ -3,6 +3,8 @@ import { useNavigate, useParams, Link } from 'react-router-dom';
 import { api } from '../../lib/api';
 import { useToast } from '../../context/ToastContext';
 import { FormField } from '../../components/ui/FormField';
+import { FormErrorBanner } from '../../components/ui/FormErrorBanner';
+import { LoadingOverlay } from '../../components/ui/LoadingOverlay';
 import { Spinner } from '../../components/ui/Spinner';
 
 const EMP_TYPES   = ['Full-time', 'Part-time', 'Contract', 'Internship'];
@@ -55,7 +57,10 @@ export function EditJobPage() {
 
   function validate() {
     const errs = {};
-    if (form.title !== undefined && !form.title.trim()) errs.title = 'Title cannot be empty.';
+    if (form.title !== undefined && !form.title.trim()) errs.title = 'Job title cannot be empty.';
+    if (form.department !== undefined && !form.department.trim()) errs.department = 'Department cannot be empty.';
+    if (form.location !== undefined && !form.location.trim()) errs.location = 'Job location cannot be empty.';
+    if (form.description !== undefined && !form.description.trim()) errs.description = 'Job description cannot be empty.';
     return errs;
   }
 
@@ -89,6 +94,8 @@ export function EditJobPage() {
       </div>
 
       <form id="edit-job-form" className="admin-card admin-form-wide" onSubmit={handleSubmit} noValidate>
+        <LoadingOverlay visible={loading} message="Saving changes…" />
+        <FormErrorBanner errors={errors} />
         <div className="admin-form-grid">
           <FormField id="ej-title" label="Job Title" value={form.title}
             onChange={(e) => set('title', e.target.value)} error={errors.title} />

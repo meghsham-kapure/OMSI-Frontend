@@ -2,6 +2,8 @@ import { useState } from 'react';
 import { api } from '../lib/api';
 import { useToast } from '../context/ToastContext';
 import { FormField } from '../components/ui/FormField';
+import { FormErrorBanner } from '../components/ui/FormErrorBanner';
+import { LoadingOverlay } from '../components/ui/LoadingOverlay';
 
 export function MyAccountPage() {
   const toast = useToast();
@@ -18,7 +20,10 @@ export function MyAccountPage() {
 
   async function handleEmailSubmit(e) {
     e.preventDefault();
-    if (!email) return;
+    const newErrors = {};
+    if (!email.trim()) newErrors.email = 'New email address is required.';
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) newErrors.email = 'Invalid email address. Please enter a valid email (e.g. user@example.com).';
+    if (Object.keys(newErrors).length > 0) { setErrors(newErrors); return; }
     setErrors({});
     setEmailLoading(true);
     try {
@@ -37,13 +42,13 @@ export function MyAccountPage() {
     const newErrors = {};
 
     if (!password) newErrors.password = 'New password is required.';
-    else if (password.length < 8) newErrors.password = 'Password must be at least 8 characters.';
-    else if (!/[A-Z]/.test(password)) newErrors.password = 'Must contain at least one uppercase letter.';
-    else if (!/[a-z]/.test(password)) newErrors.password = 'Must contain at least one lowercase letter.';
-    else if (!/[0-9]/.test(password)) newErrors.password = 'Must contain at least one number.';
-    else if (!/[^A-Za-z0-9]/.test(password)) newErrors.password = 'Must contain at least one special character.';
+    else if (password.length < 8) newErrors.password = `Password is too short — minimum 8 characters (currently ${password.length}).`;
+    else if (password.length > 32) newErrors.password = 'Password is too long — maximum 32 characters.';
+    else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?])/.test(password))
+      newErrors.password = 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.';
 
-    if (password !== confirmPassword) newErrors.confirmPassword = 'Passwords do not match.';
+    if (!confirmPassword) newErrors.confirmPassword = 'Please confirm your new password.';
+    else if (password !== confirmPassword) newErrors.confirmPassword = 'Passwords do not match.';
 
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
@@ -73,9 +78,11 @@ export function MyAccountPage() {
 
       <div className="admin-cards-row">
         {/* Change Email */}
-        <div className="admin-card">
+        <div className="admin-card" style={{ position: 'relative' }}>
+          <LoadingOverlay visible={emailLoading} message="Updating email…" />
           <h3 className="admin-card__title">Change Email</h3>
           <form id="my-account-email-form" onSubmit={handleEmailSubmit} noValidate>
+            <FormErrorBanner errors={errors.email ? { email: errors.email } : {}} />
             <FormField
               id="my-email"
               label="New email address"
@@ -97,9 +104,11 @@ export function MyAccountPage() {
         </div>
 
         {/* Change Password */}
-        <div className="admin-card">
+        <div className="admin-card" style={{ position: 'relative' }}>
+          <LoadingOverlay visible={passwordLoading} message="Updating password…" />
           <h3 className="admin-card__title">Change Password</h3>
           <form id="my-account-password-form" onSubmit={handlePasswordSubmit} noValidate>
+            <FormErrorBanner errors={{ ...(errors.password ? { password: errors.password } : {}), ...(errors.confirmPassword ? { confirmPassword: errors.confirmPassword } : {}) }} />
             <FormField
               id="my-password"
               label="New password"

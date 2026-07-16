@@ -5,6 +5,7 @@ import { useToast } from '../../context/ToastContext';
 import { AdminTable } from '../../components/ui/AdminTable';
 import { StatusBadge } from '../../components/ui/StatusBadge';
 import { ConfirmDialog } from '../../components/ui/ConfirmDialog';
+import { Spinner } from '../../components/ui/Spinner';
 
 const ROLES = ['SUPERADMIN', 'ADMIN', 'ENGINEER', 'RECRUITER', 'USER'];
 
@@ -167,12 +168,15 @@ export function UsersPage() {
         </Link>
       </div>
 
-      <AdminTable
-        headers={['Email', 'Role', 'Status', 'Actions']}
-        rows={rows}
-        loading={loading}
-        emptyMessage="No users found."
-      />
+      {loading ? (
+        <div className="admin-page-center"><Spinner size="lg" /></div>
+      ) : (
+        <AdminTable
+          headers={['Email', 'Role', 'Status', 'Actions']}
+          rows={rows}
+          emptyMessage="No users found."
+        />
+      )}
 
       {/* Delete Confirm */}
       <ConfirmDialog
@@ -202,7 +206,7 @@ export function UsersPage() {
             <div className="admin-dialog__actions">
               <button className="admin-btn admin-btn--ghost" onClick={() => setRoleTarget(null)}>Cancel</button>
               <button className="admin-btn admin-btn--primary" onClick={handleRoleChange} disabled={actionLoading}>
-                {actionLoading ? 'Saving…' : 'Save Role'}
+                {actionLoading ? <><Spinner size="sm" /> Saving…</> : 'Save Role'}
               </button>
             </div>
           </div>
@@ -225,7 +229,7 @@ export function UsersPage() {
             <div className="admin-dialog__actions">
               <button className="admin-btn admin-btn--ghost" onClick={() => setEmailTarget(null)}>Cancel</button>
               <button className="admin-btn admin-btn--primary" onClick={handleEmailChange} disabled={actionLoading}>
-                {actionLoading ? 'Saving…' : 'Update Email'}
+                {actionLoading ? <><Spinner size="sm" /> Saving…</> : 'Update Email'}
               </button>
             </div>
           </div>
@@ -249,7 +253,7 @@ export function UsersPage() {
             <div className="admin-dialog__actions">
               <button className="admin-btn admin-btn--ghost" onClick={() => setPwTarget(null)}>Cancel</button>
               <button className="admin-btn admin-btn--primary" onClick={handlePasswordReset} disabled={actionLoading}>
-                {actionLoading ? 'Saving…' : 'Reset Password'}
+                {actionLoading ? <><Spinner size="sm" /> Saving…</> : 'Reset Password'}
               </button>
             </div>
           </div>

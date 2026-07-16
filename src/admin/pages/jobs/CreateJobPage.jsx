@@ -3,6 +3,8 @@ import { useNavigate, Link } from 'react-router-dom';
 import { api } from '../../lib/api';
 import { useToast } from '../../context/ToastContext';
 import { FormField } from '../../components/ui/FormField';
+import { FormErrorBanner } from '../../components/ui/FormErrorBanner';
+import { LoadingOverlay } from '../../components/ui/LoadingOverlay';
 
 const EMP_TYPES = ['Full-time', 'Part-time', 'Contract', 'Internship'];
 const DEPARTMENTS = ['Engineering', 'Design', 'Surveying', 'Management', 'Administration', 'Other'];
@@ -33,9 +35,10 @@ export function CreateJobPage() {
 
   function validate() {
     const errs = {};
-    if (!form.title.trim()) errs.title = 'Title is required.';
-    if (!form.location.trim()) errs.location = 'Location is required.';
-    if (!form.description.trim()) errs.description = 'Description is required.';
+    if (!form.title.trim()) errs.title = 'Job title is required (e.g. Senior Structural Engineer).';
+    if (!form.department.trim()) errs.department = 'Department is required.';
+    if (!form.location.trim()) errs.location = 'Job location is required (e.g. Pune, Maharashtra).';
+    if (!form.description.trim()) errs.description = 'Job description is required — include responsibilities, requirements, and other details.';
     return errs;
   }
 
@@ -67,6 +70,8 @@ export function CreateJobPage() {
       </div>
 
       <form id="create-job-form" className="admin-card admin-form-wide" onSubmit={handleSubmit} noValidate>
+        <LoadingOverlay visible={loading} message="Creating job…" />
+        <FormErrorBanner errors={errors} />
         <div className="admin-form-grid">
           <FormField id="cj-title" label="Job Title" required value={form.title}
             onChange={(e) => set('title', e.target.value)} error={errors.title}

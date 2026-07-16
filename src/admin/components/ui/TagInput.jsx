@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { X } from 'lucide-react';
 
 /**
  * Chip-style multi-value input.
@@ -46,7 +47,7 @@ export function TagInput({ id, values, onChange, placeholder = 'Type and press E
             onClick={() => remove(i)}
             aria-label={`Remove ${v}`}
           >
-            ✕
+            <X size={12} />
           </button>
         </span>
       ))}

@@ -5,6 +5,8 @@ import { useToast } from '../../context/ToastContext';
 import { FormField } from '../../components/ui/FormField';
 import { FileUpload } from '../../components/ui/FileUpload';
 import { TagInput } from '../../components/ui/TagInput';
+import { FormErrorBanner } from '../../components/ui/FormErrorBanner';
+import { LoadingOverlay } from '../../components/ui/LoadingOverlay';
 
 const INITIAL = {
   slug: '', name: '', designation: '', qualification: '',
@@ -46,20 +48,20 @@ export function CreateEmployeePage() {
 
   function validate() {
     const errs = {};
-    if (!form.slug.trim()) errs.slug = 'Slug is required.';
-    if (!form.name.trim()) errs.name = 'Name is required.';
-    if (!form.designation.trim()) errs.designation = 'Designation is required.';
-    if (!form.qualification.trim()) errs.qualification = 'Qualification is required.';
-    if (!form.experience.trim()) errs.experience = 'Experience is required.';
-    if (!form.location.trim()) errs.location = 'Location is required.';
-    if (!form.email.trim()) errs.email = 'Email is required.';
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) errs.email = 'Enter a valid email.';
-    if (!form.phone.trim()) errs.phone = 'Phone is required.';
-    else if (form.phone.trim().length < 10) errs.phone = 'Phone must be at least 10 characters.';
-    if (specializations.length === 0) errs.specializations = 'Add at least one specialization.';
-    if (keyProjects.length === 0) errs.keyProjects = 'Add at least one key project.';
-    if (imageFiles.length === 0) errs.image = 'Profile image is required.';
-    if (resumeFiles.length === 0) errs.resume = 'Resume (PDF) is required.';
+    if (!form.slug.trim()) errs.slug = 'URL slug is required (auto-generated from name, or enter manually).';
+    if (!form.name.trim()) errs.name = 'Full name is required.';
+    if (!form.designation.trim()) errs.designation = 'Designation is required (e.g. Senior Engineer).';
+    if (!form.qualification.trim()) errs.qualification = 'Qualification is required (e.g. B.E Civil).';
+    if (!form.experience.trim()) errs.experience = 'Experience is required (e.g. 10 years).';
+    if (!form.location.trim()) errs.location = 'Location is required (e.g. Pune).';
+    if (!form.email.trim()) errs.email = 'Email address is required.';
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) errs.email = 'Invalid email address. Please enter a valid email.';
+    if (!form.phone.trim()) errs.phone = 'Phone number is required.';
+    else if (form.phone.trim().length < 10) errs.phone = `Phone number must be at least 10 digits (currently ${form.phone.trim().length}).`;
+    if (specializations.length === 0) errs.specializations = 'Add at least one specialization — type and press Enter.';
+    if (keyProjects.length === 0) errs.keyProjects = 'Add at least one key project — type and press Enter.';
+    if (imageFiles.length === 0) errs.image = 'Profile photo is required — upload a PNG or JPG image.';
+    if (resumeFiles.length === 0) errs.resume = 'Resume is required — upload a PDF file.';
     return errs;
   }
 
@@ -103,7 +105,8 @@ export function CreateEmployeePage() {
       </div>
 
       <form id="create-employee-form" className="admin-card admin-form-wide" onSubmit={handleSubmit} noValidate>
-
+        <LoadingOverlay visible={loading} message="Adding employee…" />
+        <FormErrorBanner errors={errors} />
         <div className="admin-form-grid">
           <FormField id="ce-name" label="Full Name" required value={form.name}
             onChange={(e) => set('name', e.target.value)} error={errors.name} placeholder="John Doe" />

@@ -3,6 +3,8 @@ import { useNavigate, Link } from 'react-router-dom';
 import { api } from '../../lib/api';
 import { useToast } from '../../context/ToastContext';
 import { FormField } from '../../components/ui/FormField';
+import { FormErrorBanner } from '../../components/ui/FormErrorBanner';
+import { LoadingOverlay } from '../../components/ui/LoadingOverlay';
 
 const ROLES = ['ADMIN', 'ENGINEER', 'RECRUITER', 'USER', 'SUPERADMIN'];
 
@@ -26,17 +28,16 @@ export function CreateUserPage() {
 
   function validate() {
     const errs = {};
-    if (!form.email) errs.email = 'Email is required.';
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) errs.email = 'Enter a valid email.';
+    if (!form.email.trim()) errs.email = 'Email address is required.';
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(form.email)) errs.email = 'Invalid email address. Please enter a valid email (e.g. user@example.com).';
 
     if (!form.password) errs.password = 'Password is required.';
-    else if (form.password.length < 8 || form.password.length > 32) errs.password = 'Password must be 8–32 characters.';
-    else if (!/[A-Z]/.test(form.password)) errs.password = 'Must include an uppercase letter.';
-    else if (!/[a-z]/.test(form.password)) errs.password = 'Must include a lowercase letter.';
-    else if (!/[0-9]/.test(form.password)) errs.password = 'Must include a number.';
-    else if (!/[^A-Za-z0-9]/.test(form.password)) errs.password = 'Must include a special character.';
+    else if (form.password.length < 8) errs.password = `Password is too short — minimum 8 characters (currently ${form.password.length}).`;
+    else if (form.password.length > 32) errs.password = 'Password is too long — maximum 32 characters.';
+    else if (!/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?])/.test(form.password))
+      errs.password = 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.';
 
-    if (!form.role) errs.role = 'Role is required.';
+    if (!form.role) errs.role = 'Please select a role for this user.';
     return errs;
   }
 
@@ -73,7 +74,9 @@ export function CreateUserPage() {
       </div>
 
       <div className="admin-card admin-card--narrow">
+        <LoadingOverlay visible={loading} message="Creating user…" />
         <form id="create-user-form" onSubmit={handleSubmit} noValidate>
+          <FormErrorBanner errors={errors} />
           <FormField id="cu-email" label="Email address" type="email" required
             value={form.email} onChange={(e) => set('email', e.target.value)} error={errors.email}
             placeholder="user@example.com" />

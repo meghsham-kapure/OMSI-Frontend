@@ -6,6 +6,7 @@ import { AdminTable } from '../../components/ui/AdminTable';
 import { StatusBadge } from '../../components/ui/StatusBadge';
 import { ConfirmDialog } from '../../components/ui/ConfirmDialog';
 import { Spinner } from '../../components/ui/Spinner';
+import { X, FileText, Globe, Paperclip, Mail, Phone } from 'lucide-react';
 
 const PAGE_SIZE = 15;
 
@@ -350,7 +351,7 @@ export function ApplicationsPage() {
                     Delete
                   </button>
                 )}
-                <button className="admin-modal__close" onClick={() => setSelected(null)}>✕</button>
+                <button className="admin-modal__close" onClick={() => setSelected(null)}><X size={18} /></button>
               </div>
             </div>
 
@@ -404,17 +405,17 @@ export function ApplicationsPage() {
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: 8 }}>
                   {selected.resumeLink && (
                     <a href={selected.resumeLink} target="_blank" rel="noopener noreferrer" className="admin-btn admin-btn--sm admin-btn--ghost">
-                      📄 Resume ↗
+                      <FileText size={14} /> Resume ↗
                     </a>
                   )}
                   {selected.portfolioLink && (
                     <a href={selected.portfolioLink} target="_blank" rel="noopener noreferrer" className="admin-btn admin-btn--sm admin-btn--ghost">
-                      🌐 Portfolio ↗
+                      <Globe size={14} /> Portfolio ↗
                     </a>
                   )}
                   {(selected.otherDocumentLinks || []).map((url, i) => (
                     <a key={i} href={url} target="_blank" rel="noopener noreferrer" className="admin-btn admin-btn--sm admin-btn--ghost">
-                      📎 Document {i + 1} ↗
+                      <Paperclip size={14} /> Document {i + 1} ↗
                     </a>
                   ))}
                   {!selected.resumeLink && !selected.portfolioLink && !(selected.otherDocumentLinks?.length) && (
@@ -450,10 +451,10 @@ export function ApplicationsPage() {
                   href={`mailto:${selected.email}?subject=Re: Your Application — ${encodeURIComponent(selected.jobId?.title || 'Position')}`}
                   className="admin-btn admin-btn--sm admin-btn--primary"
                 >
-                  📧 Reply via Email
+                  <Mail size={14} /> Reply via Email
                 </a>
                 <a href={`tel:${selected.phoneNumber}`} className="admin-btn admin-btn--sm admin-btn--ghost">
-                  📞 Call
+                  <Phone size={14} /> Call
                 </a>
               </div>
 

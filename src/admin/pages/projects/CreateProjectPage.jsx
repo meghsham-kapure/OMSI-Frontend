@@ -4,6 +4,8 @@ import { api } from '../../lib/api';
 import { useToast } from '../../context/ToastContext';
 import { FormField } from '../../components/ui/FormField';
 import { FileUpload } from '../../components/ui/FileUpload';
+import { FormErrorBanner } from '../../components/ui/FormErrorBanner';
+import { LoadingOverlay } from '../../components/ui/LoadingOverlay';
 
 const CATEGORIES = ['Construction', 'Transportation', 'Structural', 'Water', 'Surveying'];
 const STATUSES = ['Upcoming', 'Ongoing', 'Finished'];
@@ -30,16 +32,42 @@ export function CreateProjectPage() {
 
   function validate() {
     const errs = {};
-    if (!form.title.trim()) errs.title = 'Title is required.';
-    if (!form.status) errs.status = 'Status is required.';
-    if (!form.location.trim()) errs.location = 'Location is required.';
-    if (!form.client.trim()) errs.client = 'Client is required.';
-    if (!form.description.trim()) errs.description = 'Description is required.';
-    if (!form.budget.trim()) errs.budget = 'Budget is required.';
-    if (!form.startDate) errs.startDate = 'Start date is required.';
-    if (!form.teamLeader.trim()) errs.teamLeader = 'Team leader is required.';
+    const t = form.title.trim();
+    if (!t) errs.title = 'Project title is required.';
+    else if (t.length < 5) errs.title = `Title is too short — minimum 5 characters (currently ${t.length}).`;
+    else if (t.length > 200) errs.title = `Title is too long — maximum 200 characters (currently ${t.length}).`;
+
+    if (!form.status) errs.status = 'Please select a project status (Upcoming, Ongoing, or Finished).';
+
+    const loc = form.location.trim();
+    if (!loc) errs.location = 'Project location is required (e.g. Pune, Maharashtra).';
+    else if (loc.length < 5) errs.location = `Location is too short — minimum 5 characters (currently ${loc.length}).`;
+    else if (loc.length > 200) errs.location = `Location is too long — maximum 200 characters (currently ${loc.length}).`;
+
+    const cl = form.client.trim();
+    if (!cl) errs.client = 'Client name is required.';
+    else if (cl.length < 5) errs.client = `Client name is too short — minimum 5 characters (currently ${cl.length}).`;
+    else if (cl.length > 200) errs.client = `Client name is too long — maximum 200 characters (currently ${cl.length}).`;
+
+    const desc = form.description.trim();
+    if (!desc) errs.description = 'Project description is required — briefly describe the scope of work.';
+    else if (desc.length < 50) errs.description = `Description is too short — minimum 50 characters (currently ${desc.length}).`;
+    else if (desc.length > 2000) errs.description = `Description is too long — maximum 2000 characters (currently ${desc.length}).`;
+
+    const bud = form.budget.trim();
+    if (!bud) errs.budget = 'Budget is required (enter the amount in numbers).';
+    else if (bud.length < 5) errs.budget = `Budget is too short — minimum 5 characters (currently ${bud.length}).`;
+    else if (bud.length > 20) errs.budget = `Budget is too long — maximum 20 characters (currently ${bud.length}).`;
+
+    if (!form.startDate) errs.startDate = 'Start date is required — select when the project begins.';
+
+    const tl = form.teamLeader.trim();
+    if (!tl) errs.teamLeader = 'Team leader name is required.';
+    else if (tl.length < 2) errs.teamLeader = `Team leader name is too short — minimum 2 characters (currently ${tl.length}).`;
+    else if (tl.length > 100) errs.teamLeader = `Team leader name is too long — maximum 100 characters (currently ${tl.length}).`;
+
     if (form.isFeatured && images.length === 0) errs.images = 'Featured projects require at least 1 image (max 3).';
-    if (images.length > 3) errs.images = 'Maximum 3 images allowed.';
+    if (images.length > 3) errs.images = 'Too many images — maximum 3 images allowed.';
     return errs;
   }
 
@@ -75,6 +103,8 @@ export function CreateProjectPage() {
       </div>
 
       <form id="create-project-form" className="admin-card admin-form-wide" onSubmit={handleSubmit} noValidate>
+        <LoadingOverlay visible={loading} message="Creating project…" />
+        <FormErrorBanner errors={errors} />
         <div className="admin-form-grid">
           <FormField id="cp-title" label="Title" required value={form.title}
             onChange={(e) => set('title', e.target.value)} error={errors.title} placeholder="Bridge Construction Project" />
